@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Prompts para Videos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #a0a0a0;
+            font-weight: 300;
+        }
+
+        .columns-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .column {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .gemini-column .column-header,
+        .gemini-column .column-content {
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.6), 0 0 80px rgba(102, 126, 234, 0.3);
+        }
+
+        .notebooklm-column .column-header,
+        .notebooklm-column .column-content {
+            box-shadow: 0 0 40px rgba(240, 147, 251, 0.6), 0 0 80px rgba(240, 147, 251, 0.3);
+        }
+
+        .notebooklm-column .column-header h2 {
+            text-shadow: 0 0 20px rgba(240, 147, 251, 0.6);
+        }
+
+        .youtube-column .column-header,
+        .youtube-column .column-content {
+            box-shadow: 0 0 40px rgba(255, 87, 87, 0.6), 0 0 80px rgba(255, 87, 87, 0.3);
+        }
+
+        .youtube-column .column-header h2 {
+            text-shadow: 0 0 20px rgba(255, 87, 87, 0.6);
+        }
+
+        .column-header {
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px 16px 0 0;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .column-header h2 {
+            font-size: 1.8em;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .column-header p {
+            color: #a0a0a0;
+            font-size: 0.95em;
+        }
+
+        .column-content {
+            background: rgba(30, 30, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            padding: 30px;
+        }
+
+        .notebooklm-column .column-header {
+            border-color: rgba(240, 147, 251, 0.3);
+        }
+
+        .notebooklm-column .column-content {
+            border-color: rgba(240, 147, 251, 0.1);
+        }
+
+        .youtube-column .column-header {
+            border-color: rgba(255, 87, 87, 0.3);
+        }
+
+        .youtube-column .column-content {
+            border-color: rgba(255, 87, 87, 0.1);
+        }
+
+        .step {
+            background: rgba(15, 15, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step:hover {
+            transform: translateY(-3px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .youtube-column .step:hover {
+            border-color: rgba(255, 87, 87, 0.5);
+            box-shadow: 0 10px 40px rgba(255, 87, 87, 0.2);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .youtube-column .step-number {
+            background: linear-gradient(135deg, #FF0000 0%, #FF5757 100%);
+            box-shadow: 0 4px 15px rgba(255, 87, 87, 0.4);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin-left: 12px;
+            color: #a8b3ff;
+            font-weight: 500;
+        }
+
+        .youtube-column .step-badge {
+            background: rgba(255, 87, 87, 0.2);
+            border: 1px solid rgba(255, 87, 87, 0.3);
+            color: #ffb3b3;
+        }
+
+        .step-description {
+            color: #b0b0b0;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .prompt-container {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .prompt-box {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 18px 60px 18px 18px;
+            font-family: Arial, 'Helvetica Narrow', Helvetica, sans-serif;
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-box:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: rgba(15, 15, 30, 0.95);
+        }
+
+        .youtube-column .prompt-box {
+            border-color: rgba(255, 87, 87, 0.3);
+        }
+
+        .youtube-column .prompt-box:hover {
+            border-color: rgba(255, 87, 87, 0.6);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .youtube-column .copy-btn {
+            background: linear-gradient(135deg, #FF0000 0%, #FF5757 100%);
+            box-shadow: 0 4px 15px rgba(255, 87, 87, 0.3);
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .youtube-column .copy-btn:hover {
+            box-shadow: 0 6px 20px rgba(255, 87, 87, 0.5);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+        }
+
+        .config-section {
+            background: rgba(15, 15, 30, 0.6);
+            border: 1px solid rgba(240, 147, 251, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .youtube-column .config-section {
+            border-color: rgba(255, 87, 87, 0.3);
+        }
+
+        .config-section h3 {
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-list {
+            color: #b0b0b0;
+            line-height: 2;
+            font-size: 0.95em;
+        }
+
+        .config-list strong {
+            color: #f093fb;
+        }
+
+        .youtube-column .config-list strong {
+            color: #FF5757;
+        }
+
+        .prompt-large {
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 75px;
+            white-space: pre-wrap;
+        }
+
+        .prompt-large::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .prompt-large::-webkit-scrollbar-track {
+            background: rgba(15, 15, 30, 0.5);
+            border-radius: 10px;
+        }
+
+        .prompt-large::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+        }
+
+        .youtube-column .prompt-large::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #FF0000 0%, #FF5757 100%);
+        }
+
+        .prompt-large::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 60px 40px;
+            background: rgba(15, 15, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 24px;
+            animation: fadeIn 1s ease-in;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #f093fb, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .footer-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            margin-bottom: 25px;
+            color: #a8b3ff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-text {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #c0c0c0;
+        }
+
+        .developer-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .developer-label {
+            font-size: 0.85em;
+            color: #808080;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .developer-name {
+            font-size: 2.2em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .developer-title {
+            font-size: 1em;
+            color: #a0a0a0;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .developer-quote {
+            max-width: 700px;
+            margin: 25px auto;
+            padding: 25px 35px;
+            background: rgba(102, 126, 234, 0.08);
+            border-left: 3px solid #667eea;
+            border-radius: 8px;
+            font-style: italic;
+            color: #b8c5ff;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: #a8b3ff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(102, 126, 234, 0.25);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.5);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn .icon {
+            font-size: 1.2em;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .columns-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .step {
+                padding: 20px;
+            }
+
+            .step-title {
+                font-size: 1.1em;
+            }
+
+            .prompt-box {
+                padding: 15px 15px 60px 15px;
+                font-size: 0.85em;
+            }
+
+            .copy-btn {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Guía de Prompts para Videos Educativos</h1>
+            <p>Proceso completo: Gemini + NotebookLM + YouTube</p>
+        </div>
+
+        <div class="columns-container">
+            <!-- Columna Gemini -->
+            <div class="column gemini-column">
+                <div class="column-header">
+                    <h2>🤖 Prompts para Gemini</h2>
+                    <p>Extracción y organización del contenido</p>
+                </div>
+                <div class="column-content">
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">1</span>
+                            <div>
+                                <span class="step-title">Extracción Inicial</span>
+                                <span class="step-badge">PDF → Texto</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Sube tu archivo PDF y usa esta instrucción para que la IA extraiga y organice el contenido.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-1">Adjunto este archivo PDF. Por favor, extrae todo el texto y divídelo en temas coherentes para organizar mis clases, asegurándote de no alterar ni omitir nada del contenido original.</div>
+                            <button class="copy-btn" onclick="copyPrompt(1)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">2</span>
+                            <div>
+                                <span class="step-title">Lista de Temas</span>
+                                <span class="step-badge">Títulos Principales</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Solicita solo los títulos para tener una vista general.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-2">Del contenido que acabas de organizar, dame únicamente los títulos de los temas principales.</div>
+                            <button class="copy-btn" onclick="copyPrompt(2)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <div>
+                                <span class="step-title">Lista de Subtemas</span>
+                                <span class="step-badge">Desglose Detallado</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Pide el desglose de cada tema principal.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-3">Para cada uno de los temas principales que listaste, dame ahora los subtemas que aparecen dentro, tal como figuran en el texto.</div>
+                            <button class="copy-btn" onclick="copyPrompt(3)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">4</span>
+                            <div>
+                                <span class="step-title">Plan de Videos</span>
+                                <span class="step-badge">YouTube Strategy</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Organiza el contenido para YouTube con videos cortos y detallados.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-4">Ahora, ayúdame a crear un plan de videos para YouTube basado en esa estructura. Quiero que los temas más importantes y densos se dividan en una serie de videos cortos y específicos (por ejemplo, Video 2, Video 2.1, Video 2.2). Asigna títulos atractivos a cada serie y video, pensados para un público de postulantes universitarios.</div>
+                            <button class="copy-btn" onclick="copyPrompt(4)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">5</span>
+                            <div>
+                                <span class="step-title">Índice Final</span>
+                                <span class="step-badge">Estructura Completa</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Pide un resumen limpio de toda la estructura de videos.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-5">Genial. Ahora, por favor, dame un índice limpio y ordenado con los títulos de todas las series y los videos que las componen.</div>
+                            <button class="copy-btn" onclick="copyPrompt(5)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">6</span>
+                            <div>
+                                <span class="step-title">Descripciones de Miniaturas</span>
+                                <span class="step-badge">Prompts para IA</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Solicita las ideas para los recursos visuales.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-6">Para cada video del índice, necesito generar una imagen en miniatura. Proporciónáme una descripción detallada y precisa para cada una, lista para copiar y pegar en un generador de imágenes por IA. La descripción debe ser muy específica al contenido de cada video.</div>
+                            <button class="copy-btn" onclick="copyPrompt(6)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-header">
+                            <span class="step-number">7</span>
+                            <div>
+                                <span class="step-title">Contenido Completo</span>
+                                <span class="step-badge">Guiones Finales</span>
+                            </div>
+                        </div>
+                        <div class="step-description">
+                            Pide el contenido textual de cada video, copia fiel del original.
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-7">Perfecto. Ahora, dame el contenido completo para cada uno de los videos del plan. Es crucial que el texto sea extraído exactamente como aparece en el PDF original, sin omitir ninguna información. Organiza el texto bajo el título de cada video correspondiente.</div>
+                            <button class="copy-btn" onclick="copyPrompt(7)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna NotebookLM -->
+            <div class="column notebooklm-column">
+                <div class="column-header">
+                    <h2>🎙️ Configuración NotebookLM</h2>
+                    <p>Generación de audio educativo con IA</p>
+                </div>
+                <div class="column-content">
+                    <div class="config-section">
+                        <h3>⚙️ Configuración Recomendada</h3>
+                        <div class="config-list">
+                            • <strong>Elegir idioma:</strong> Español Latinoamérica<br>
+                            • <strong>Elige un estilo visual:</strong> Pizarra<br>
+                            • <strong>Formato:</strong> Explicación
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>📌 Prompt para Indicar a NotebookLM</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Coloca este prompt en el cuadro "¿En qué deberían enfocarse los presentadores creados por IA?"
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-8">Crea una guía de estudio completa sobre las fuentes proporcionadas. Aplica rigurosamente TODAS las directrices especificadas en mi documento 'INSTRUCCIONES_MAESTRAS.txt' para organizar la información.</div>
+                            <button class="copy-btn" onclick="copyPrompt(8)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>📝 Contenido del archivo INSTRUCCIONES_MAESTRAS.txt</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Copia este contenido completo y guárdalo como archivo de texto. Luego súbelo a NotebookLM junto con tus fuentes.
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <button class="download-btn" onclick="downloadInstructions()">
+                                <span class="icon">💾</span>
+                                <span class="text">Descargar INSTRUCCIONES_MAESTRAS.txt</span>
+                            </button>
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box prompt-large" id="prompt-9">Instrucciones Maestras para Video Educativo (Estilo Tutor Sanmarquino)
+
+PERSONA Y TONO (OBLIGATORIO): Adopta la personalidad de un tutor varón, enérgico y directo. Dirígete siempre en segunda persona al espectador, llamándolo "futuro sanmarquino". El tono debe ser cercano y amigable, como si le explicaras un tema complejo a un amigo que no sabe nada, utilizando analogías simples y evitando toda jerga compleja.
+
+ESTRUCTURA Y GUION (OBLIGATORIO):
+Inicio Directo: Comienza el video mencionando inmediatamente el título y el tema que se va a tratar. No inicies con preguntas.
+Hoja de Ruta: Justo después del título, presenta una "Hoja de Ruta" que liste los puntos clave que se abordarán en el video.
+Cierre "Hacks del Tema": Finaliza el video con una sección final titulada "Los Hacks del Tema", que debe resumir en exactamente tres viñetas los datos cruciales que el estudiante no puede olvidar.
+
+CONTENIDO Y ESTILO DE ENSEÑANZA (OBLIGATORIO):
+Simplificación Máxima: Explica todos los conceptos para una audiencia sin ningún conocimiento previo.
+Ejemplos Prácticos: Muestra constantemente cómo los conceptos teóricos se aplican en la vida real.
+Técnicas de Memorización: Utiliza activamente mnemotecnias, acrónimos, rimas, historias o asociaciones visuales para ayudar a memorizar la información clave.
+
+DIRECTRICES VISUALES (CRÍTICO Y OBLIGATORIO):
+Ultra-Visual: El video debe ser extremadamente dinámico y visual. El objetivo es reemplazar el texto en pantalla con elementos gráficos.
+Ilustración por Oración: Por cada oración o idea corta que se narre, debe aparecer una ilustración, un gráfico o una imagen que la represente visualmente.
+Mínimo Texto en Pantalla: Evita los párrafos largos. Usa solo palabras clave o frases muy cortas sobre los gráficos si es estrictamente necesario.
+
+FORMATOS DE ORGANIZACIÓN (OBLIGATORIO): A lo largo del video, es mandatorio organizar la información utilizando todos los siguientes formatos visuales para estructurar el contenido:
+Mapa Conceptual: Para mostrar la jerarquía y relaciones entre ideas.
+Cuadro Comparativo: Para contrastar dos o más elementos, teorías o puntos de vista.
+Diagrama de Flujo: Para describir cualquier proceso o secuencia de pasos.
+Diagrama de Venn: Para visualizar similitudes y diferencias.
+Línea de Tiempo: Para ordenar cronológicamente todos los eventos y fechas relevantes.
+
+TAREA FINAL: Genera un recurso de estudio completo (video, guía, presentación) a partir de las fuentes proporcionadas, aplicando rigurosamente todas y cada una de las instrucciones especificadas en este documento. El resultado debe ser altamente visual, estructurado y optimizado para el aprendizaje.</div>
+                            <button class="copy-btn" onclick="copyPrompt(9)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>🎨 Configuración Extras</h3>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: #ffffff; font-weight: 600; margin-bottom: 10px; font-size: 1.05em;">
+                                🎬 Recursos de Imagen y Video
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <a href="https://imgur.com/a/1Qec64u" target="_blank" style="text-decoration: none;">
+                                    <button class="download-btn" style="width: 100%;">
+                                        <span class="icon">📥</span>
+                                        <span class="text">Ver y Descargar Recursos (Imgur)</span>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: #ffffff; font-weight: 600; margin-bottom: 10px; font-size: 1.05em;">
+                                🔲 Canva Editable para Ocultar Logo
+                            </div>
+                            <div class="prompt-container">
+                                <div class="prompt-box" id="prompt-10" style="padding: 15px 60px 15px 15px; word-break: break-all;">https://www.canva.com/design/DAG2ujl4MVQ/fTFT5556baXIJzO4gu5Asg/edit?utm_content=DAG2ujl4MVQ&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton</div>
+                                <button class="copy-btn" onclick="copyPrompt(10)">
+                                    <span class="icon">📋</span>
+                                    <span class="text">Copiar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="color: #ffffff; font-weight: 600; margin-bottom: 10px; font-size: 1.05em;">
+                                🖼️ Claude Editable para Hacer Miniaturas
+                            </div>
+                            <div class="prompt-container">
+                                <div class="prompt-box" id="prompt-11" style="padding: 15px 60px 15px 15px; word-break: break-all;">https://claude.ai/public/artifacts/ceea13a1-4ea6-4d3a-9cf0-0f834a56a090</div>
+                                <button class="copy-btn" onclick="copyPrompt(11)">
+                                    <span class="icon">📋</span>
+                                    <span class="text">Copiar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna YouTube -->
+            <div class="column youtube-column">
+                <div class="column-header">
+                    <h2>📺 Configuración de YouTube</h2>
+                    <p>Optimización para publicación</p>
+                </div>
+                <div class="column-content">
+                    <div class="config-section">
+                        <h3>📝 Título de Videos</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Formato recomendado para títulos atractivos y optimizados para SEO
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-12">TITULO EN MAYUSCULAS | Curso – Semana 00 – Pre San Marcos</div>
+                            <button class="copy-btn" onclick="copyPrompt(12)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>📄 Descripción de Videos</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Plantilla completa para la descripción de tus videos educativos
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-13">#MENTORA #UNMSM
+¿Te preparas para San Marcos? 💪
+Suscríbete y activa la campanita 🔔 para no perderte nuestras clases, consejos y materiales que te ayudarán a lograr tu ingreso.
+Todo el contenido de Academia Mentora lo encuentras aquí:</div>
+                            <button class="copy-btn" onclick="copyPrompt(13)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>#️⃣ Hashtags</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Etiquetas optimizadas para alcance y descubribilidad
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box" id="prompt-14">#Psicología #Educación #Preuniversitario #Aprendizaje #unmsm #educa #mentora #academia #presanmarcos</div>
+                            <button class="copy-btn" onclick="copyPrompt(14)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>🧾 Descripción Créditos (Plantilla Completa)</h3>
+                        <div class="step-description" style="margin-bottom: 15px;">
+                            Plantilla profesional con transparencia sobre uso de IA y derechos
+                        </div>
+                        <div class="prompt-container">
+                            <div class="prompt-box prompt-large" id="prompt-15">🧾 Plantilla para descripción de tus videos educativos (lista para copiar y adaptar)
+
+🎓 Descripción principal del video
+Título: El origen de la psicología como ciencia
+Tema: Educación preuniversitaria / Psicología
+📘 Descripción: En este video exploramos el origen de la psicología como ciencia, sus primeros métodos de estudio y los aportes de los pioneros que marcaron el inicio de esta disciplina. El contenido está diseñado para estudiantes preuniversitarios que buscan reforzar sus conocimientos de forma clara y didáctica.
+
+🧠 Autoría y uso de IA (para transparencia y monetización)
+🪶 Autor: [Tu nombre o nombre del canal]
+🎬 Producción: Guion original y supervisión de contenido realizados por [Tu nombre].
+🤖 Asistencia de IA: Este video fue producido con apoyo de la herramienta Notebook LM (de Google) para redacción y generación de voz, bajo la dirección y revisión del creador humano.
+🎨 Edición y diseño visual: Totalmente elaborados por [Tu nombre]. Miniatura, colores y marca visual son propiedad del canal.
+
+⚙️ Derechos y transparencia
+📜 Todo el material visual y de audio ha sido creado o editado por el autor.
+📚 Algunas referencias conceptuales provienen de fuentes académicas o de dominio público, adaptadas al formato educativo.
+🚫 No se utiliza material con derechos de autor sin permiso.</div>
+                            <button class="copy-btn" onclick="copyPrompt(15)">
+                                <span class="icon">📋</span>
+                                <span class="text">Copiar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Herramientas Pro -->
+        <div style="margin-top: 60px;">
+            <div class="header" style="margin-bottom: 40px;">
+                <h1 style="font-size: 2.2em; color: #ffffff; text-shadow: 0 0 30px rgba(102, 126, 234, 0.6);">🛠️ Herramientas Pro: Unir Videos y Más</h1>
+                <p>Automatiza el procesamiento de tus videos educativos</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 25px;">
+                <!-- Estructura de carpetas -->
+                <div class="config-section" style="box-shadow: 0 0 40px rgba(102, 126, 234, 0.6), 0 0 80px rgba(102, 126, 234, 0.3);">
+                    <h3>📁 Estructura Recomendada</h3>
+                    <div style="margin-bottom: 15px;">
+                        <button class="download-btn" onclick="downloadFolderStructure()" style="width: 100%;">
+                            <span class="icon">📦</span>
+                            <span class="text">Descargar Estructura de Carpetas (.zip)</span>
+                        </button>
+                    </div>
+                    <div class="prompt-container">
+                        <div class="prompt-box" id="prompt-16" style="font-family: 'Courier New', monospace; font-size: 0.8em; white-space: pre;">D:\videosproyecto\
+├── recursos\
+│   ├── intro.mp4
+│   ├── outro.mp4
+│   ├── logo.png
+│   └── marco_oficial.png
+├── videos_sin_procesar\
+│   └── (tus videos aquí)
+├── videos_procesados\
+│   └── (videos finales aquí)
+└── procesar_video_auto.bat</div>
+                        <button class="copy-btn" onclick="copyPrompt(16)">
+                            <span class="icon">📋</span>
+                            <span class="text">Copiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pasos para crear .bat -->
+                <div class="config-section" style="box-shadow: 0 0 40px rgba(240, 147, 251, 0.6), 0 0 80px rgba(240, 147, 251, 0.3);">
+                    <h3>📝 Pasos para Crear el Archivo .bat</h3>
+                    <div class="step-description">
+                        <strong style="color: #f093fb;">PASO 1:</strong> Abrir el Bloc de notas<br>
+                        <strong style="color: #f093fb;">PASO 2:</strong> Copiar y pegar el código/script<br>
+                        <strong style="color: #f093fb;">PASO 3:</strong> Nombrar así: procesar_video_auto.bat<br><br>
+                        <strong style="color: #ff5757;">⚠️ IMPORTANTE:</strong><br>
+                        • El video que quieras procesar debe estar en la misma carpeta<br>
+                        • El nombre del archivo DEBE terminar en .bat<br>
+                        • Debes elegir "Todos los archivos" al guardar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script completo -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 25px;">
+                <div class="config-section" style="box-shadow: 0 0 40px rgba(102, 126, 234, 0.6), 0 0 80px rgba(102, 126, 234, 0.3);">
+                    <h3>💻 Script procesar_video_auto.bat</h3>
+                    <div style="margin-bottom: 15px;">
+                        <button class="download-btn" onclick="downloadBatFile()" style="width: 100%;">
+                            <span class="icon">💾</span>
+                            <span class="text">Descargar procesar_video_auto.bat</span>
+                        </button>
+                    </div>
+                    <div class="prompt-container">
+                        <div class="prompt-box prompt-large" id="prompt-17" style="font-family: 'Courier New', monospace; font-size: 0.75em;">@echo off
+echo ========================================
+echo PROCESADOR AUTOMATICO DE VIDEOS
+echo ========================================
+echo.
+set /p nombre_video="Ingresa el nombre del video (sin extension): "
+echo.
+echo Obteniendo duracion del video...
+REM Obtener duración en segundos
+for /f "delims=" %%i in ('ffprobe -v error -show_entries format^=duration -of default^=noprint_wrappers^=1:nokey^=1 "videos_sin_procesar\%nombre_video%.mp4"') do set duracion=%%i
+REM Convertir a entero (quitar decimales)
+for /f "tokens=1 delims=." %%a in ("%duracion%") do set duracion_int=%%a
+REM Restar 3 segundos
+set /a duracion_final=%duracion_int%-3
+echo Duracion original: %duracion_int% segundos
+echo Duracion final (sin ultimos 3 seg): %duracion_final% segundos
+echo.
+echo Procesando "%nombre_video%.mp4"...
+echo.
+ffmpeg -i recursos\intro.mp4 -i "videos_sin_procesar\%nombre_video%.mp4" -i recursos\outro.mp4 -i recursos\logo.png -i recursos\marco_oficial.png -filter_complex "[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[intro_scaled];[intro_scaled]setsar=1[intro];[1:v]crop=1264:720:8:0,scale=1280:720[v0_scaled];[v0_scaled]setsar=1,trim=duration=%duracion_final%,setpts=PTS-STARTPTS[v0];[3:v]scale=220:-1[logo];[v0][logo]overlay=main_w-overlay_w-12:main_h-overlay_h-12[v1];[v1][4:v]overlay=0:0[main_scaled];[main_scaled]setsar=1[main];[2:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2[outro_scaled];[outro_scaled]setsar=1[outro];[1:a]atrim=duration=%duracion_final%,asetpts=PTS-STARTPTS[a1];[intro][0:a][main][a1][outro][2:a]concat=n=3:v=1:a=1[outv][outa]" -map "[outv]" -map "[outa]" "videos_procesados\%nombre_video%_FINAL.mp4"
+echo.
+echo ========================================
+echo PROCESO COMPLETADO!
+echo Video guardado como: videos_procesados\%nombre_video%_FINAL.mp4
+echo ========================================
+pause</div>
+                        <button class="copy-btn" onclick="copyPrompt(17)">
+                            <span class="icon">📋</span>
+                            <span class="text">Copiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pasos para instalar FFmpeg -->
+                <div class="config-section" style="box-shadow: 0 0 40px rgba(240, 147, 251, 0.6), 0 0 80px rgba(240, 147, 251, 0.3);">
+                    <h3>⚙️ Pasos para Instalar FFmpeg en Windows</h3>
+                    <div style="margin-bottom: 15px;">
+                        <a href="https://drive.google.com/file/d/1UyJ4tCf1WBzr2Rw795txEHpKFiU_Rz8N/view?usp=sharing" target="_blank" style="text-decoration: none;">
+                            <button class="download-btn" style="width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                                <span class="icon">📦</span>
+                                <span class="text">Descargar FFmpeg en RAR</span>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="step-description" style="font-size: 0.9em; line-height: 1.8;">
+                        <strong style="color: #f093fb;">1. Descargar FFmpeg</strong><br>
+                        • Ve al sitio oficial: <a href="https://ffmpeg.org/download.html" target="_blank" style="color: #a8b3ff;">https://ffmpeg.org/download.html</a><br>
+                        • Haz clic en el logo de Windows<br>
+                        • Descarga desde BtbN (recomendado)<br>
+                        • Elige la versión <code style="background: rgba(240, 147, 251, 0.2); padding: 2px 8px; border-radius: 4px;">ffmpeg-release-essentials.zip</code><br><br>
+                        
+                        <strong style="color: #f093fb;">2. Extraer los archivos</strong><br>
+                        • Crea una carpeta en disco C llamada <strong>ffmpeg</strong> y extrae ahí<br>
+                        • Verás carpetas como <code style="background: rgba(240, 147, 251, 0.2); padding: 2px 8px; border-radius: 4px;">bin, doc, presets</code><br><br>
+                        
+                        <strong style="color: #f093fb;">3. Agregar FFmpeg al PATH del sistema</strong><br>
+                        • Abre el Panel de Control → Sistema → Configuración avanzada del sistema<br>
+                        • Haz clic en Variables de entorno<br>
+                        • En "Variables del sistema", busca la variable <strong>Path</strong> y haz clic en Editar<br>
+                        • Haz clic en Nuevo y agrega la ruta: <code style="background: rgba(240, 147, 251, 0.2); padding: 2px 8px; border-radius: 4px;">C:\ffmpeg\bin</code><br>
+                        • Haz clic en Aceptar en todas las ventanas<br><br>
+                        
+                        <strong style="color: #f093fb;">4. Verificar la instalación</strong><br>
+                        • Abre una nueva ventana de CMD o PowerShell<br>
+                        • Escribe: <code style="background: rgba(240, 147, 251, 0.2); padding: 2px 8px; border-radius: 4px;">ffmpeg -version</code><br>
+                        • Deberías ver la información de la versión de FFmpeg<br><br>
+                        
+                        <strong style="color: #11998e;">📺 LINK YOUTUBE TUTORIAL:</strong><br>
+                        <a href="https://youtu.be/WNjEISfzcYM" target="_blank" style="color: #a8b3ff; font-weight: 600;">https://youtu.be/WNjEISfzcYM</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guía de uso -->
+            <div style="margin-bottom: 25px;">
+                <div class="config-section" style="box-shadow: 0 0 40px rgba(255, 87, 87, 0.6), 0 0 80px rgba(255, 87, 87, 0.3);">
+                    <h3>🎯 Guía de Uso</h3>
+                    <div class="step-description" style="font-size: 1em; line-height: 2;">
+                        <strong style="color: #f093fb;">1.</strong> Descarga tu video nuevo en <code style="background: rgba(102, 126, 234, 0.2); padding: 2px 8px; border-radius: 4px;">D:\videosproyecto\videos_sin_procesar\</code><br>
+                        <strong style="color: #f093fb;">2.</strong> Haz doble clic en <strong>procesar_video_auto.bat</strong><br>
+                        <strong style="color: #f093fb;">3.</strong> Escribe el nombre del video (ejemplo: video2)<br>
+                        <strong style="color: #f093fb;">4.</strong> Presiona Enter<br>
+                        <strong style="color: #11998e;">✅ ¡Listo!</strong> Se creará <strong>video2_FINAL.mp4</strong> en la carpeta videos_procesados
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-badge">✨ DESARROLLADO CON PASIÓN ✨</div>
+            
+            <div class="footer-text">
+                Workflow completo: Extrae con Gemini → Genera audio con NotebookLM → Publica en YouTube
+            </div>
+
+            <div class="developer-section">
+                <div class="developer-label">&lt; Creado por /&gt;</div>
+                <div class="developer-name">Miguel Rivas V.</div>
+                <div class="developer-title">Full Stack Developer & Creative Innovator 🚀</div>
+                
+                <div class="developer-quote">
+                    "La tecnología no es solo código, es arte en movimiento. Cada proyecto es una oportunidad para crear experiencias extraordinarias."
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-badge">💻 JavaScript</span>
+                    <span class="tech-badge">🎨 CSS3</span>
+                    <span class="tech-badge">⚡ HTML5</span>
+                    <span class="tech-badge">⚛️ React</span>
+                    <span class="tech-badge">✨ UI/UX Design</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        function copyPrompt(number) {
+            const promptText = document.getElementById('prompt-' + number).textContent.trim();
+            const button = event.target.closest('.copy-btn');
+            const textSpan = button.querySelector('.text');
+            
+            navigator.clipboard.writeText(promptText).then(() => {
+                const originalText = textSpan.textContent;
+                textSpan.textContent = '¡Copiado!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    textSpan.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                alert('No se pudo copiar el texto');
+            });
+        }
+
+        function downloadInstructions() {
+            const content = document.getElementById('prompt-9').textContent.trim();
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'INSTRUCCIONES_MAESTRAS.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadBatFile() {
+            const content = document.getElementById('prompt-17').textContent.trim();
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'procesar_video_auto.bat';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadFolderStructure() {
+            const zip = new JSZip();
+            
+            // Crear estructura de carpetas
+            const recursos = zip.folder("videosproyecto/recursos");
+            const videosSinProcesar = zip.folder("videosproyecto/videos_sin_procesar");
+            const videosProcesados = zip.folder("videosproyecto/videos_procesados");
+            
+            // Agregar archivos README en cada carpeta para que se creen
+            recursos.file("README.txt", "Coloca aqui tus archivos:\n- intro.mp4\n- outro.mp4\n- logo.png\n- marco_oficial.png");
+            videosSinProcesar.file("README.txt", "Coloca aqui los videos que deseas procesar");
+            videosProcesados.file("README.txt", "Aqui se guardaran los videos procesados finales");
+            
+            // Generar el ZIP y descargarlo
+            zip.generateAsync({type: "blob"}).then(function(content) {
+                const url = URL.createObjectURL(content);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'estructura_videosproyecto.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</body>
+</html>
